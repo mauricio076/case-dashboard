@@ -1,6 +1,7 @@
-name: Deploy to Cloudflare (axlotl.dev)
+name: Deploy to Cloudflare (dev.axlotl.dev)
 
-# Deploys the Expediente worker to axlotl.dev and provisions its D1 database.
+# Deploys the Expediente worker to the DEVELOPMENT environment (dev.axlotl.dev)
+# and provisions its D1 database. Set WORKER_ENV=production to target axlotl.dev.
 #
 # Required GitHub repository secrets (Settings -> Secrets and variables -> Actions):
 #   CLOUDFLARE_API_TOKEN   (required) - Workers Scripts + D1 + Workers Routes edit perms
@@ -36,8 +37,9 @@ jobs:
 
       - run: npm ci
 
-      - name: Deploy worker + D1
+      - name: Deploy worker + D1 (dev environment)
         env:
+          WORKER_ENV: dev
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}

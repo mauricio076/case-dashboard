@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "deploy": "wrangler deploy --env dev",
+    "deploy:dev": "WORKER_ENV=dev bash scripts/deploy.sh",
     "deploy:full": "bash scripts/deploy.sh",
-    "build:check": "wrangler deploy --dry-run --outdir=dist",
-    "db:create": "wrangler d1 create expediente",
+    "deploy:prod": "WORKER_ENV=production bash scripts/deploy.sh",
+    "build:check": "wrangler deploy --env dev --dry-run --outdir=dist",
+    "db:create": "wrangler d1 create expediente-dev",
     "db:init": "wrangler d1 execute expediente --local --file=schema.sql",
-    "db:init:remote": "wrangler d1 execute expediente --remote --file=schema.sql",
+    "db:init:remote": "wrangler d1 execute expediente-dev --remote --file=schema.sql",
     "types": "wrangler types"
   },
   "dependencies": {
