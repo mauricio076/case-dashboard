@@ -56,7 +56,7 @@ routes = [
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "expediente"
-database_id = "FILL_IN_AFTER_CREATE"
+database_id = "8dfebeb0-4e74-4d30-96f5-9cd6d8c5df2a"
 
 [observability]
 enabled = false
