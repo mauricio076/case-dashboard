@@ -1,9 +1,9 @@
 # Expediente — Guía de despliegue en Cloudflare
 
 > **Entornos (Wrangler environments):**
-> - **Desarrollo (por defecto):** `dev.axlotl.dev` — worker `expediente-dev`,
+> - **Desarrollo (por defecto):** `casos-dev.axlotl.dev` — worker `expediente-dev`,
 >   base de datos D1 `expediente-dev`.
-> - **Producción (opcional, para más adelante):** `axlotl.dev` — worker
+> - **Producción (opcional, para más adelante):** `casos.axlotl.dev` — worker
 >   `expediente`, base de datos D1 `expediente`.
 >
 > La zona `axlotl.dev` debe existir en la misma cuenta de Cloudflare; al
@@ -12,7 +12,7 @@
 
 ## Despliegue automático (recomendado)
 
-El objetivo por defecto es el **entorno de desarrollo** (`dev.axlotl.dev`).
+El objetivo por defecto es el **entorno de desarrollo** (`casos-dev.axlotl.dev`).
 
 ### A) Script todo-en-uno
 
@@ -22,14 +22,14 @@ export CLOUDFLARE_ACCOUNT_ID=...    # id de tu cuenta
 export APP_PASSWORD=...             # contraseña de la app (solo 1ª vez / al cambiar)
 export JWT_SECRET=$(openssl rand -base64 32)
 npm ci
-npm run deploy:dev                  # -> dev.axlotl.dev   (entorno de desarrollo)
-# npm run deploy:prod               # -> axlotl.dev       (producción, cuando quieras)
+npm run deploy:dev                  # -> casos-dev.axlotl.dev   (entorno de desarrollo)
+# npm run deploy:prod               # -> casos.axlotl.dev (producción, cuando quieras)
 ```
 
 `deploy:dev` (en `scripts/deploy.sh`) es idempotente: crea la base de datos
 D1 `expediente-dev` si no existe, escribe su `database_id` en `wrangler.toml`,
 aplica `schema.sql`, configura los secretos y despliega el worker a
-`dev.axlotl.dev`. Internamente usa `wrangler deploy --env dev`.
+`casos-dev.axlotl.dev`. Internamente usa `wrangler deploy --env dev`.
 
 ### B) GitHub Actions
 
@@ -134,15 +134,15 @@ npm run deploy           # = wrangler deploy --env dev
 
 Wrangler publicará el worker en el subdominio de desarrollo:
 ```
-✅ Deployed to https://dev.axlotl.dev
+✅ Deployed to https://casos-dev.axlotl.dev
 ```
 
-> `dev.axlotl.dev` está definido en el bloque `[env.dev]` de `wrangler.toml`
+> `casos-dev.axlotl.dev` está definido en el bloque `[env.dev]` de `wrangler.toml`
 > mediante `routes` con `custom_domain = true`. La zona `axlotl.dev` debe estar
 > en tu cuenta de Cloudflare; Wrangler crea el DNS del subdominio y el
 > certificado al desplegar.
 >
-> Para producción (`axlotl.dev`) más adelante: `npm run deploy:prod`.
+> Para producción (`casos.axlotl.dev`) más adelante: `npm run deploy:prod`.
 
 ---
 

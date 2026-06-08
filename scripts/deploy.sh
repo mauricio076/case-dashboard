@@ -31,11 +31,11 @@ WRANGLER="npx --yes wrangler@3"
 
 if [[ "$WORKER_ENV" == "production" ]]; then
   DB_NAME="expediente"
-  URL="https://axlotl.dev"
+  URL="https://casos.axlotl.dev"
 else
   WORKER_ENV="dev"
   DB_NAME="expediente-dev"
-  URL="https://dev.axlotl.dev"
+  URL="https://casos-dev.axlotl.dev"
 fi
 
 echo "==> Target environment: $WORKER_ENV  (db: $DB_NAME)"

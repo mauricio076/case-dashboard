@@ -21,8 +21,8 @@ database_id = "local"
 port = 8787
 
 # ──────────────────────────────────────────────────────────────────────────────
-# DEVELOPMENT environment  →  https://dev.axlotl.dev   (deploy target)
-# Deploy with:  wrangler deploy --env dev   (or `npm run deploy:full`)
+# DEVELOPMENT environment  →  https://casos-dev.axlotl.dev   (deploy target)
+# Deploy with:  wrangler deploy --env dev   (or `npm run deploy:dev`)
 #
 # Secrets — set BEFORE deploying:
 #   wrangler secret put APP_PASSWORD --env dev
@@ -32,7 +32,7 @@ port = 8787
 name = "expediente-dev"
 vars = { APP_USERNAME = "admin" }
 routes = [
-  { pattern = "dev.axlotl.dev", custom_domain = true },
+  { pattern = "casos-dev.axlotl.dev", custom_domain = true },
 ]
 
 [[env.dev.d1_databases]]
@@ -43,15 +43,14 @@ database_id = "FILL_IN_AFTER_CREATE"
 # Then: wrangler d1 execute expediente-dev --remote --file=schema.sql --env dev
 
 # ──────────────────────────────────────────────────────────────────────────────
-# PRODUCTION environment  →  https://axlotl.dev   (not used yet; for later)
-# Deploy with:  WORKER_ENV=production npm run deploy:full
+# PRODUCTION environment  →  https://casos.axlotl.dev   (not used yet; for later)
+# Deploy with:  npm run deploy:prod
 # ──────────────────────────────────────────────────────────────────────────────
 [env.production]
 name = "expediente"
 vars = { APP_USERNAME = "admin" }
 routes = [
-  { pattern = "axlotl.dev", custom_domain = true },
-  { pattern = "www.axlotl.dev", custom_domain = true },
+  { pattern = "casos.axlotl.dev", custom_domain = true },
 ]
 
 [[env.production.d1_databases]]
