@@ -3,19 +3,57 @@ main = "src/index.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Base config (used by `wrangler dev` for local development).
+# Named environments below are the actual deploy targets.
+# ──────────────────────────────────────────────────────────────────────────────
+
 [vars]
 APP_USERNAME = "admin"
-# Secrets — set BEFORE deploying:
-#   wrangler secret put APP_PASSWORD
-#   wrangler secret put JWT_SECRET
 
+# Local D1 (only used by `wrangler dev`). Remote deploys use the env blocks.
 [[d1_databases]]
 binding = "DB"
 database_name = "expediente"
-database_id = "FILL_IN_AFTER_CREATE"
-# Run:  wrangler d1 create expediente
-# Then copy the database_id here and run:
-#   wrangler d1 execute expediente --remote --file=schema.sql
+database_id = "local"
 
 [dev]
 port = 8787
+
+# ──────────────────────────────────────────────────────────────────────────────
+# DEVELOPMENT environment  →  https://casos-dev.axlotl.dev   (deploy target)
+# Deploy with:  wrangler deploy --env dev   (or `npm run deploy:dev`)
+#
+# Secrets — set BEFORE deploying:
+#   wrangler secret put APP_PASSWORD --env dev
+#   wrangler secret put JWT_SECRET   --env dev
+# ──────────────────────────────────────────────────────────────────────────────
+[env.dev]
+name = "expediente-dev"
+vars = { APP_USERNAME = "admin" }
+routes = [
+  { pattern = "casos-dev.axlotl.dev", custom_domain = true },
+]
+
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "expediente-dev"
+database_id = "FILL_IN_AFTER_CREATE"
+# Run:  wrangler d1 create expediente-dev
+# Then: wrangler d1 execute expediente-dev --remote --file=schema.sql --env dev
+
+# ──────────────────────────────────────────────────────────────────────────────
+# PRODUCTION environment  →  https://casos.axlotl.dev   (not used yet; for later)
+# Deploy with:  npm run deploy:prod
+# ──────────────────────────────────────────────────────────────────────────────
+[env.production]
+name = "expediente"
+vars = { APP_USERNAME = "admin" }
+routes = [
+  { pattern = "casos.axlotl.dev", custom_domain = true },
+]
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "expediente"
+database_id = "FILL_IN_AFTER_CREATE"

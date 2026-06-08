@@ -1,0 +1,10 @@
+# Local development secrets for `wrangler dev`.
+# Copy this file to `.dev.vars` (which is gitignored) and fill in real values.
+#
+#   cp .dev.vars.example .dev.vars
+
+# Password to log into the app locally (user is APP_USERNAME from wrangler.toml, default "admin").
+APP_PASSWORD=changeme-local
+
+# Secret used to sign session cookies. Any long random string works locally.
+JWT_SECRET=dev-secret-local

@@ -1,0 +1,59 @@
+name: Deploy to Cloudflare (casos-dev.axlotl.dev)
+
+# Deploys the Expediente worker to the DEVELOPMENT environment
+# (casos-dev.axlotl.dev) and provisions its D1 database.
+# Set WORKER_ENV=production to target casos.axlotl.dev.
+#
+# Required GitHub repository secrets (Settings -> Secrets and variables -> Actions):
+#   CLOUDFLARE_API_TOKEN   (required) - Workers Scripts + D1 + Workers Routes edit perms
+#   CLOUDFLARE_ACCOUNT_ID  (recommended)
+#   APP_PASSWORD           (set once) - login password for the app
+#   JWT_SECRET             (set once) - random string for signing session cookies
+#
+# After the first successful run, the resolved D1 database_id is committed back
+# to wrangler.toml so later runs are fully deterministic.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-cloudflare
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Deploy worker + D1 (dev environment)
+        env:
+          WORKER_ENV: dev
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: ./scripts/deploy.sh
+
+      - name: Persist resolved D1 database_id
+        if: github.ref == 'refs/heads/main'
+        run: |
+          if ! git diff --quiet wrangler.toml; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add wrangler.toml
+            git commit -m "chore: persist D1 database_id [skip ci]"
+            git push
+          fi
