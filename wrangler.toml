@@ -1,0 +1,21 @@
+name = "expediente"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+APP_USERNAME = "admin"
+# Secrets — set BEFORE deploying:
+#   wrangler secret put APP_PASSWORD
+#   wrangler secret put JWT_SECRET
+
+[[d1_databases]]
+binding = "DB"
+database_name = "expediente"
+database_id = "FILL_IN_AFTER_CREATE"
+# Run:  wrangler d1 create expediente
+# Then copy the database_id here and run:
+#   wrangler d1 execute expediente --remote --file=schema.sql
+
+[dev]
+port = 8787
