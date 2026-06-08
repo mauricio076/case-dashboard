@@ -1,5 +1,46 @@
 # Expediente — Guía de despliegue en Cloudflare
 
+> **Dominio de producción:** `axlotl.dev` (configurado en `wrangler.toml` como
+> custom domain). La zona `axlotl.dev` debe existir en la misma cuenta de
+> Cloudflare; al desplegar, Wrangler crea el registro DNS y el certificado
+> automáticamente.
+
+## Despliegue automático (recomendado)
+
+Hay dos formas de desplegar a `axlotl.dev` sin pasos manuales:
+
+### A) Script todo-en-uno
+
+```bash
+export CLOUDFLARE_API_TOKEN=...     # token con permisos Workers + D1 + Routes
+export CLOUDFLARE_ACCOUNT_ID=...    # id de tu cuenta
+export APP_PASSWORD=...             # contraseña de la app (solo 1ª vez / al cambiar)
+export JWT_SECRET=$(openssl rand -base64 32)
+npm ci
+npm run deploy:full
+```
+
+`deploy:full` (en `scripts/deploy.sh`) es idempotente: crea la base de datos
+D1 si no existe, escribe su `database_id` en `wrangler.toml`, aplica
+`schema.sql`, configura los secretos y despliega el worker a `axlotl.dev`.
+
+### B) GitHub Actions
+
+El workflow `.github/workflows/deploy.yml` despliega en cada push a `main`.
+Solo necesitas añadir estos *repository secrets* (Settings → Secrets and
+variables → Actions):
+
+| Secret | Requerido | Para qué |
+|---|---|---|
+| `CLOUDFLARE_API_TOKEN` | sí | autenticación |
+| `CLOUDFLARE_ACCOUNT_ID` | recomendado | seleccionar la cuenta |
+| `APP_PASSWORD` | 1ª vez | contraseña de login |
+| `JWT_SECRET` | 1ª vez | firma de sesiones |
+
+---
+
+## Despliegue manual (paso a paso)
+
 ## Requisitos previos
 
 - Cuenta de Cloudflare (cloudflare.com)
@@ -82,10 +123,14 @@ APP_USERNAME = "tu_usuario"
 npm run deploy
 ```
 
-Wrangler mostrará la URL de tu worker:
+Wrangler publicará el worker en el dominio configurado:
 ```
-✅ Deployed to https://expediente.TU_CUENTA.workers.dev
+✅ Deployed to https://axlotl.dev
 ```
+
+> El dominio `axlotl.dev` (y `www.axlotl.dev`) está definido en `wrangler.toml`
+> mediante `routes` con `custom_domain = true`. La zona debe estar en tu cuenta
+> de Cloudflare; Wrangler crea el DNS y el certificado al desplegar.
 
 ---
 

@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "deploy:full": "bash scripts/deploy.sh",
+    "build:check": "wrangler deploy --dry-run --outdir=dist",
+    "db:create": "wrangler d1 create expediente",
     "db:init": "wrangler d1 execute expediente --local --file=schema.sql",
     "db:init:remote": "wrangler d1 execute expediente --remote --file=schema.sql",
     "types": "wrangler types"

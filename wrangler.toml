@@ -3,6 +3,15 @@ main = "src/index.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+# Serve the worker on the custom domain axlotl.dev.
+# Requires the zone "axlotl.dev" to exist in the same Cloudflare account.
+# With custom_domain = true, Wrangler creates the DNS record and edge cert
+# automatically on `wrangler deploy` — no manual DNS setup needed.
+routes = [
+  { pattern = "axlotl.dev", custom_domain = true },
+  { pattern = "www.axlotl.dev", custom_domain = true },
+]
+
 [vars]
 APP_USERNAME = "admin"
 # Secrets — set BEFORE deploying:
